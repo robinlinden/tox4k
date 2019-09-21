@@ -4,7 +4,7 @@
 #include <sstream>
 
 extern "C" JNIEXPORT jstring JNICALL
-Java_ltd_evilcorp_tox4k_MainActivity_stringFromJNI(
+Java_ltd_evilcorp_tox4k_ToxJni_stringFromJNI(
         JNIEnv* env,
         jobject /* this */) {
     std::stringstream ss;
