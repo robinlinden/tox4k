@@ -15,7 +15,7 @@ set(BOOTSTRAP_DAEMON FALSE CACHE INTERNAL "")
 FetchContent_MakeAvailable(Toxcore)
 
 add_library(${PROJECT_NAME} SHARED
-    native-lib.cpp
+    src/native-lib.cpp
 )
 
 target_link_libraries(${PROJECT_NAME}
