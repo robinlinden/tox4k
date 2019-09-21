@@ -1,7 +1,9 @@
 package ltd.evilcorp.tox4k
 
 class ToxJni {
-    external fun stringFromJNI(): String
+    external fun versionMajor(): Long
+    external fun versionMinor(): Long
+    external fun versionPatch(): Long
 
     companion object {
         init {

@@ -1,14 +1,19 @@
 #include <jni.h>
 #include <tox/tox.h>
 
-#include <sstream>
+extern "C" {
 
-extern "C" JNIEXPORT jstring JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_stringFromJNI(
-        JNIEnv* env,
-        jobject /* this */) {
-    std::stringstream ss;
-    ss << "Linked against c-toxcore " << tox_version_major() << "."
-        << tox_version_minor() << "." << tox_version_patch();
-    return env->NewStringUTF(ss.str().c_str());
+JNIEXPORT jlong JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_versionMajor(JNIEnv *env, jobject) {
+    return tox_version_major();
+}
+JNIEXPORT jlong JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_versionMinor(JNIEnv *env, jobject) {
+    return tox_version_minor();
+}
+JNIEXPORT jlong JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_versionPatch(JNIEnv *env, jobject) {
+    return tox_version_patch();
+}
+
 }
