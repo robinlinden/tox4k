@@ -5,15 +5,15 @@ extern "C" {
 
 // API version
 JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_versionMajor(JNIEnv *env, jobject) {
+Java_ltd_evilcorp_tox4k_ToxJni_versionMajor(JNIEnv *, jobject) {
     return tox_version_major();
 }
 JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_versionMinor(JNIEnv *env, jobject) {
+Java_ltd_evilcorp_tox4k_ToxJni_versionMinor(JNIEnv *, jobject) {
     return tox_version_minor();
 }
 JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_versionPatch(JNIEnv *env, jobject) {
+Java_ltd_evilcorp_tox4k_ToxJni_versionPatch(JNIEnv *, jobject) {
     return tox_version_patch();
 }
 JNIEXPORT jboolean JNICALL

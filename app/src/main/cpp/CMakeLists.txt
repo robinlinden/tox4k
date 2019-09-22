@@ -21,3 +21,15 @@ add_library(${PROJECT_NAME} SHARED
 target_link_libraries(${PROJECT_NAME}
     toxcore_static
 )
+
+target_compile_options(${PROJECT_NAME}
+    PRIVATE
+        $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>:
+            -pedantic-errors;
+            -Wall;
+            -Werror;
+            -Wextra;
+            -Wnon-virtual-dtor;
+            -Wshadow;
+        >
+)
