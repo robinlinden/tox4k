@@ -24,4 +24,25 @@ class ToxJniTest {
             assertFalse(versionIsCompatible(versionMajor() + 1, versionMinor(), versionPatch()))
         }
     }
+
+    @Test
+    fun numeric_constant_functions_can_be_called() {
+        with(ToxJni()) {
+            publicKeySize()
+            secretKeySize()
+            conferenceUidSize()
+            conferenceIdSize()
+            nospamSize()
+            addressSize()
+            maxNameLength()
+            maxStatusMessageLength()
+            maxFriendRequestLength()
+            maxMessageLength()
+            maxCustomPacketSize()
+            hashLength()
+            fileIdLength()
+            maxFilenameLength()
+            maxHostnameLength()
+        }
+    }
 }
