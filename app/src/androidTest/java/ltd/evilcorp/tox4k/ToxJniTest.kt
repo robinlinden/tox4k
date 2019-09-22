@@ -1,6 +1,8 @@
 package ltd.evilcorp.tox4k
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -12,6 +14,14 @@ class ToxJniTest {
             versionMajor()
             versionMinor()
             versionPatch()
+        }
+    }
+
+    @Test
+    fun version_compatibility_seems_to_work() {
+        with(ToxJni()) {
+            assertTrue(versionIsCompatible(versionMajor(), versionMinor(), versionPatch()))
+            assertFalse(versionIsCompatible(versionMajor() + 1, versionMinor(), versionPatch()))
         }
     }
 }
