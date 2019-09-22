@@ -9,40 +9,34 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class ToxJniTest {
     @Test
-    fun version_functions_can_be_called() {
-        with(ToxJni()) {
-            versionMajor()
-            versionMinor()
-            versionPatch()
-        }
+    fun api_version_functions_can_be_called(): Unit = with(ToxJni()) {
+        versionMajor()
+        versionMinor()
+        versionPatch()
     }
 
     @Test
-    fun version_compatibility_seems_to_work() {
-        with(ToxJni()) {
-            assertTrue(versionIsCompatible(versionMajor(), versionMinor(), versionPatch()))
-            assertFalse(versionIsCompatible(versionMajor() + 1, versionMinor(), versionPatch()))
-        }
+    fun version_compatibility_seems_to_work(): Unit = with(ToxJni()) {
+        assertTrue(versionIsCompatible(versionMajor(), versionMinor(), versionPatch()))
+        assertFalse(versionIsCompatible(versionMajor() + 1, versionMinor(), versionPatch()))
     }
 
     @Test
-    fun numeric_constant_functions_can_be_called() {
-        with(ToxJni()) {
-            publicKeySize()
-            secretKeySize()
-            conferenceUidSize()
-            conferenceIdSize()
-            nospamSize()
-            addressSize()
-            maxNameLength()
-            maxStatusMessageLength()
-            maxFriendRequestLength()
-            maxMessageLength()
-            maxCustomPacketSize()
-            hashLength()
-            fileIdLength()
-            maxFilenameLength()
-            maxHostnameLength()
-        }
+    fun numeric_constant_functions_can_be_called(): Unit = with(ToxJni()) {
+        publicKeySize()
+        secretKeySize()
+        conferenceUidSize()
+        conferenceIdSize()
+        nospamSize()
+        addressSize()
+        maxNameLength()
+        maxStatusMessageLength()
+        maxFriendRequestLength()
+        maxMessageLength()
+        maxCustomPacketSize()
+        hashLength()
+        fileIdLength()
+        maxFilenameLength()
+        maxHostnameLength()
     }
 }
