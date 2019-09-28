@@ -24,6 +24,17 @@ class ToxJni {
     external fun maxFilenameLength(): Long
     external fun maxHostnameLength(): Long
 
+    // Global enumerations
+    enum class UserStatus {
+        NONE,
+        AWAY,
+        BUSY,
+    }
+    enum class MessageType {
+        NORMAL,
+        ACTION,
+    }
+
     companion object {
         init {
             System.loadLibrary("tox4k")
