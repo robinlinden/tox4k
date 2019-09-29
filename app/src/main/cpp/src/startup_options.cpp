@@ -53,7 +53,8 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyPort(JNIEnv *, jobject, jlong opti
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyPort(JNIEnv *, jobject, jlong options, jint port) {
-    tox_options_set_proxy_port((struct Tox_Options *)options, port);
+    if (port < 0) return;
+    tox_options_set_proxy_port((struct Tox_Options *)options, static_cast<uint16_t>(port));
 }
 
 // StartPort
@@ -63,7 +64,8 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetStartPort(JNIEnv *, jobject, jlong opti
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetStartPort(JNIEnv *, jobject, jlong options, jint port) {
-    tox_options_set_start_port((struct Tox_Options *)options, port);
+    if (port < 0) return;
+    tox_options_set_start_port((struct Tox_Options *)options, static_cast<uint16_t>(port));
 }
 
 // EndPort
@@ -73,7 +75,8 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetEndPort(JNIEnv *, jobject, jlong option
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetEndPort(JNIEnv *, jobject, jlong options, jint port) {
-    tox_options_set_end_port((struct Tox_Options *)options, port);
+    if (port < 0) return;
+    tox_options_set_end_port((struct Tox_Options *)options, static_cast<uint16_t>(port));
 }
 
 // TcpPort
@@ -83,7 +86,8 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetTcpPort(JNIEnv *, jobject, jlong option
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetTcpPort(JNIEnv *, jobject, jlong options, jint port) {
-    tox_options_set_tcp_port((struct Tox_Options *)options, port);
+    if (port < 0) return;
+    tox_options_set_tcp_port((struct Tox_Options *)options, static_cast<uint16_t>(port));
 }
 
 // HolePunching

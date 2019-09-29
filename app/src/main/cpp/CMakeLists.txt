@@ -29,6 +29,7 @@ target_compile_options(${PROJECT_NAME}
         $<$<OR:$<CXX_COMPILER_ID:Clang>,$<CXX_COMPILER_ID:GNU>>:
             -pedantic-errors;
             -Wall;
+            -Wconversion;
             -Werror;
             -Wextra;
             -Wnon-virtual-dtor;
