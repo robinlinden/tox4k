@@ -1,2 +1,1 @@
-include ':app'
-rootProject.name='tox4k'
+include ':app', ':tox4k'
