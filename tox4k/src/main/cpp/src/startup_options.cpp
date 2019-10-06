@@ -6,7 +6,7 @@ extern "C" {
 // Ipv6
 JNIEXPORT jboolean JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsGetIpv6Enabled(JNIEnv *, jobject, jlong options) {
-    return tox_options_get_ipv6_enabled((const struct Tox_Options *)options);
+    return static_cast<jboolean>(tox_options_get_ipv6_enabled((const struct Tox_Options *)options));
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetIpv6Enabled(JNIEnv *, jobject, jlong options, jboolean enabled) {
@@ -16,7 +16,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetIpv6Enabled(JNIEnv *, jobject, jlong op
 // Udp
 JNIEXPORT jboolean JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsGetUdpEnabled(JNIEnv *, jobject, jlong options) {
-    return tox_options_get_udp_enabled((const struct Tox_Options *)options);
+    return static_cast<jboolean>(tox_options_get_udp_enabled((const struct Tox_Options *)options));
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetUdpEnabled(JNIEnv *, jobject, jlong options, jboolean enabled) {
@@ -26,7 +26,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetUdpEnabled(JNIEnv *, jobject, jlong opt
 // LocalDiscovery
 JNIEXPORT jboolean JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsGetLocalDiscoveryEnabled(JNIEnv *, jobject, jlong options) {
-    return tox_options_get_local_discovery_enabled((const struct Tox_Options *)options);
+    return static_cast<jboolean>(tox_options_get_local_discovery_enabled((const struct Tox_Options *)options));
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetLocalDiscoveryEnabled(JNIEnv *, jobject, jlong options, jboolean enabled) {
@@ -93,7 +93,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetTcpPort(JNIEnv *, jobject, jlong option
 // HolePunching
 JNIEXPORT jboolean JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsGetHolePunchingEnabled(JNIEnv *, jobject, jlong options) {
-    return tox_options_get_hole_punching_enabled((const struct Tox_Options *)options);
+    return static_cast<jboolean>(tox_options_get_hole_punching_enabled((const struct Tox_Options *)options));
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetHolePunchingEnabled(JNIEnv *, jobject, jlong options, jboolean enabled) {
