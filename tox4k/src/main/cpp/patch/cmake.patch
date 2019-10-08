@@ -1,4 +1,4 @@
-From fbaaf463f708097960361818478e7ea26c64a59d Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Robin=20Lind=C3=A9n?= <dev@robinlinden.eu>
 Date: Sat, 21 Sep 2019 17:38:41 +0200
 Subject: [PATCH 1/2] Get libsodium with FetchContent
@@ -22,7 +22,7 @@ index c93f17e6..d7a824a2 100644
  
  # LAYER 2: Basic networking
 diff --git a/cmake/Dependencies.cmake b/cmake/Dependencies.cmake
-index 5970fde7..097be141 100644
+index 5970fde7..15fe550f 100644
 --- a/cmake/Dependencies.cmake
 +++ b/cmake/Dependencies.cmake
 @@ -4,6 +4,7 @@
@@ -38,21 +38,19 @@ index 5970fde7..097be141 100644
  
  # For toxcore.
 -pkg_use_module(LIBSODIUM            libsodium    )
-+FetchContent_Declare(
-+    Sodium
++FetchContent_Declare(Sodium
 +    GIT_REPOSITORY https://github.com/robinlinden/libsodium-cmake.git
-+    GIT_TAG e7ddcd1872909486d4b8bbf82a1be51213e44810 # 1.0.17
++    GIT_TAG 90d87cdb228ee3ea5d50449d738b4ba264c27f2b # 1.0.17
 +)
 +set(SODIUM_DISABLE_TESTS ON CACHE INTERNAL "")
++set(SODIUM_PRETEND_TO_BE_CONFIGURED ON CACHE INTERNAL "")
 +FetchContent_MakeAvailable(Sodium)
  
  # For toxav.
  pkg_use_module(OPUS                 opus         )
 -- 
-2.16.2.windows.1
 
-
-From b1c8ea54a7622c126258573c23164b33c2a9b72b Mon Sep 17 00:00:00 2001
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
 From: =?UTF-8?q?Robin=20Lind=C3=A9n?= <dev@robinlinden.eu>
 Date: Sat, 21 Sep 2019 20:02:13 +0200
 Subject: [PATCH 2/2] Export tox/tox.h as part of the toxcore target
@@ -81,5 +79,4 @@ index d7a824a2..e3f6288f 100644
  #
  # :: Unit tests: no networking, just pure function calls.
 -- 
-2.16.2.windows.1
 
