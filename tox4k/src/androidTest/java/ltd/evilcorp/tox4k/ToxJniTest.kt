@@ -69,19 +69,19 @@ class ToxJniTest {
         assertNotEquals(proxyPort + 1, optionsGetProxyPort(options))
 
         val startPort = 9_001
-        optionsSetProxyPort(options, startPort)
-        assertEquals(startPort, optionsGetProxyPort(options))
-        assertNotEquals(startPort - 1, optionsGetProxyPort(options))
+        optionsSetStartPort(options, startPort)
+        assertEquals(startPort, optionsGetStartPort(options))
+        assertNotEquals(startPort - 1, optionsGetStartPort(options))
 
         val endPort = 1
-        optionsSetProxyPort(options, endPort)
-        assertEquals(endPort, optionsGetProxyPort(options))
-        assertNotEquals(endPort + 1, optionsGetProxyPort(options))
+        optionsSetEndPort(options, endPort)
+        assertEquals(endPort, optionsGetEndPort(options))
+        assertNotEquals(endPort + 1, optionsGetEndPort(options))
 
         val tcpPort = 40_000
-        optionsSetProxyPort(options, tcpPort)
-        assertEquals(tcpPort, optionsGetProxyPort(options))
-        assertNotEquals(tcpPort + 1, optionsGetProxyPort(options))
+        optionsSetTcpPort(options, tcpPort)
+        assertEquals(tcpPort, optionsGetTcpPort(options))
+        assertNotEquals(tcpPort + 1, optionsGetTcpPort(options))
 
         optionsSetHolePunchingEnabled(options, true)
         assertTrue(optionsGetHolePunchingEnabled(options))
