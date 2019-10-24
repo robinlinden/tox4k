@@ -109,7 +109,7 @@ class ToxJniTest {
         optionsSetSavedataData(options, bytes)
         optionsSetSavedataLength(options, bytes.size.toLong())
 
-        assertEquals(bytes.toList().toString(), optionsGetSavedataData(options).toList().toString())
+        assertArrayEquals(bytes, optionsGetSavedataData(options))
         assertEquals(bytes.size.toLong(), optionsGetSavedataLength(options))
 
         optionsFree(options)
