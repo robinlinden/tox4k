@@ -79,10 +79,10 @@ class ToxJni {
     external fun optionsSetHolePunchingEnabled(options: ToxJniOptions, enabled: Boolean)
 //    TOX_SAVEDATA_TYPE tox_options_get_savedata_type(const struct Tox_Options *options);
 //    void tox_options_set_savedata_type(struct Tox_Options *options, TOX_SAVEDATA_TYPE type);
-//    const uint8_t *tox_options_get_savedata_data(const struct Tox_Options *options);
-//    void tox_options_set_savedata_data(struct Tox_Options *options, const uint8_t *data, size_t length);
-//    size_t tox_options_get_savedata_length(const struct Tox_Options *options);
-//    void tox_options_set_savedata_length(struct Tox_Options *options, size_t length);
+    external fun optionsGetSavedataData(options: ToxJniOptions): ByteArray
+    external fun optionsSetSavedataData(options: ToxJniOptions, data: ByteArray)
+    external fun optionsGetSavedataLength(options: ToxJniOptions): Long
+    external fun optionsSetSavedataLength(options: ToxJniOptions, length: Long)
 //    tox_log_cb *tox_options_get_log_callback(const struct Tox_Options *options);
 //    void tox_options_set_log_callback(struct Tox_Options *options, tox_log_cb *callback);
 //    void *tox_options_get_log_user_data(const struct Tox_Options *options);

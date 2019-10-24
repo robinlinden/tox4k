@@ -1,6 +1,8 @@
 #include <jni.h>
 #include <tox/tox.h>
 
+#include <cassert>
+
 extern "C" {
 
 // Ipv6
@@ -98,6 +100,41 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetHolePunchingEnabled(JNIEnv *, jobject, 
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetHolePunchingEnabled(JNIEnv *, jobject, jlong options, jboolean enabled) {
     tox_options_set_hole_punching_enabled((struct Tox_Options *)options, enabled);
+}
+
+// SavedataData
+JNIEXPORT jbyteArray JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataData(JNIEnv *env, jobject, jlong options) {
+    const auto *real_options = (const struct Tox_Options *)options;
+
+    const auto *data = reinterpret_cast<const jbyte *>(tox_options_get_savedata_data(real_options));
+    const jint size = static_cast<jint>(tox_options_get_savedata_length(real_options));
+
+    jbyteArray savedata = env->NewByteArray(size);
+    env->SetByteArrayRegion(savedata, 0, size, data);
+
+    return savedata;
+}
+JNIEXPORT void JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataData(JNIEnv *env, jobject, jlong options, jbyteArray save_data) {
+    jbyte *data = env->GetByteArrayElements(save_data, nullptr); // TODO(robinlinden): This leaks.
+    jsize length = env->GetArrayLength(save_data);
+
+    tox_options_set_savedata_data(
+            (struct Tox_Options *)options,
+            reinterpret_cast<uint8_t *>(data),
+            static_cast<uint32_t>(length));
+}
+
+// SavedataLength
+JNIEXPORT jlong JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataLength(JNIEnv *, jobject, jlong options) {
+    return static_cast<jlong>(tox_options_get_savedata_length((const struct Tox_Options *)options));
+}
+JNIEXPORT void JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataLength(JNIEnv *, jobject, jlong options, jlong length) {
+    assert(length >= 0);
+    tox_options_set_savedata_length((struct Tox_Options *)options, static_cast<uint32_t>(length));
 }
 
 // Default
