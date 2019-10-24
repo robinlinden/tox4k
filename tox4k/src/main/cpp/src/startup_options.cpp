@@ -15,7 +15,7 @@ namespace {
             free(proxy_host);
         }
 
-        Tox_Options *options{nullptr};
+        Tox_Options *const options{tox_options_new(nullptr)};
         uint8_t *save_data{nullptr};
         char *proxy_host{nullptr};
     };
@@ -182,7 +182,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsDefault(JNIEnv *, jobject, jlong options) 
 // Lifecycle
 JNIEXPORT jlong JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsNew(JNIEnv *, jobject) {
-    return reinterpret_cast<jlong>(new options_container{tox_options_new(nullptr)});
+    return reinterpret_cast<jlong>(new options_container);
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsFree(JNIEnv *, jobject, jlong options) {
