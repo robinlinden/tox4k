@@ -66,7 +66,7 @@ class ToxJni {
 //    TOX_PROXY_TYPE tox_options_get_proxy_type(const struct Tox_Options *options);
 //    void tox_options_set_proxy_type(struct Tox_Options *options, TOX_PROXY_TYPE type);
     external fun optionsGetProxyHost(options: ToxJniOptions): String
-    external fun optionsSetProxyHost(options: ToxJniOptions, proxyHost: String) // TODO(robinlinden): This leaks.
+    external fun optionsSetProxyHost(options: ToxJniOptions, proxyHost: String)
     external fun optionsGetProxyPort(options: ToxJniOptions): Int
     external fun optionsSetProxyPort(options: ToxJniOptions, port: Int)
     external fun optionsGetStartPort(options: ToxJniOptions): Int
