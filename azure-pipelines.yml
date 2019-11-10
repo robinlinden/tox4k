@@ -1,8 +1,23 @@
+strategy:
+  matrix:
+    linux:
+      imageName: 'ubuntu-latest'
+    mac:
+      imageName: 'macOS-latest'
+    windows:
+      imageName: 'windows-latest'
+
 pool:
-  vmImage: 'macos-latest'
+  vmImage: $(imageName)
 
 steps:
-- script: pip3 install ninja==1.9.0.post1 cmake==3.14.4 --upgrade
+- task: UsePythonVersion@0
+  inputs:
+    versionSpec: '3.8'
+- script: python -m pip install --upgrade pip
+- script: python -m pip install --upgrade ninja==1.9.0.post1
+- script: python -m pip install --upgrade cmake==3.14.4
+  condition: ne(variables['Agent.OS'], 'Windows_NT')
 - task: Gradle@2
   inputs:
     workingDirectory: ''
