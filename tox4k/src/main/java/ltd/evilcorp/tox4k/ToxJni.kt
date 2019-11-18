@@ -63,8 +63,8 @@ class ToxJni {
     external fun optionsSetUdpEnabled(options: ToxJniOptions, enabled: Boolean)
     external fun optionsGetLocalDiscoveryEnabled(options: ToxJniOptions): Boolean
     external fun optionsSetLocalDiscoveryEnabled(options: ToxJniOptions, enabled: Boolean)
-//    TOX_PROXY_TYPE tox_options_get_proxy_type(const struct Tox_Options *options);
-//    void tox_options_set_proxy_type(struct Tox_Options *options, TOX_PROXY_TYPE type);
+    external fun optionsGetProxyType(options: ToxJniOptions): ProxyType
+    external fun optionsSetProxyType(options: ToxJniOptions, proxyType: ProxyType)
     external fun optionsGetProxyHost(options: ToxJniOptions): String
     external fun optionsSetProxyHost(options: ToxJniOptions, proxyHost: String)
     external fun optionsGetProxyPort(options: ToxJniOptions): Int

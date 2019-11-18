@@ -27,6 +27,8 @@ namespace {
     inline auto as_container(jlong options) -> options_container * {
         return reinterpret_cast<options_container *>(options);
     }
+
+    const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$ProxyType";
 }
 
 extern "C" {
@@ -62,6 +64,46 @@ JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetLocalDiscoveryEnabled(JNIEnv *, jobject, jlong options,
                                                                jboolean enabled) {
     tox_options_set_local_discovery_enabled(as_options(options), enabled);
+}
+
+// ProxyType
+JNIEXPORT jobject JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyType(JNIEnv *env, jobject, jlong options) {
+    jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
+    jfieldID enum_field;
+
+    switch (tox_options_get_proxy_type(as_options(options))) {
+        case TOX_PROXY_TYPE_NONE:
+            enum_field = env->GetStaticFieldID(enum_class, "NONE", "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
+            break;
+        case TOX_PROXY_TYPE_HTTP:
+            enum_field = env->GetStaticFieldID(enum_class, "HTTP", "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
+            break;
+        case TOX_PROXY_TYPE_SOCKS5:
+            enum_field = env->GetStaticFieldID(enum_class, "SOCKS5", "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
+            break;
+    }
+
+    return env->GetStaticObjectField(enum_class, enum_field);
+}
+
+JNIEXPORT void JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyType(JNIEnv *env, jobject, jlong options,
+                                                   jobject proxy_type) {
+    jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
+    jmethodID get_name = env->GetMethodID(enum_class, "name", "()Ljava/lang/String;");
+    jstring java_name = static_cast<jstring>(env->CallObjectMethod(proxy_type, get_name));
+    const char *name = env->GetStringUTFChars(java_name, nullptr);
+
+    if (strcmp(name, "NONE") == 0) {
+        tox_options_set_proxy_type(as_options(options), TOX_PROXY_TYPE_NONE);
+    } else if (strcmp(name, "HTTP") == 0) {
+        tox_options_set_proxy_type(as_options(options), TOX_PROXY_TYPE_HTTP);
+    } else if (strcmp(name, "SOCKS5") == 0) {
+        tox_options_set_proxy_type(as_options(options), TOX_PROXY_TYPE_SOCKS5);
+    }
+
+    env->ReleaseStringUTFChars(java_name, name);
 }
 
 // ProxyHost

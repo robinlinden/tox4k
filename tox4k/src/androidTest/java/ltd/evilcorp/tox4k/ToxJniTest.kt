@@ -96,6 +96,22 @@ class ToxJniTest {
     }
 
     @Test
+    fun the_proxy_types_work(): Unit = with(ToxJni()) {
+        val options = optionsNew()
+
+        optionsSetProxyType(options, ToxJni.ProxyType.NONE)
+        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.NONE)
+        optionsSetProxyType(options, ToxJni.ProxyType.HTTP)
+        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.HTTP)
+        optionsSetProxyType(options, ToxJni.ProxyType.SOCKS5)
+        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.SOCKS5)
+        optionsSetProxyType(options, ToxJni.ProxyType.NONE)
+        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.NONE)
+
+        optionsFree(options)
+    }
+
+    @Test
     fun savedata_works(): Unit = with(ToxJni()) {
         // TODO(robinlinden): Test with known data and read expected values from the loaded save.
         val options = optionsNew()
