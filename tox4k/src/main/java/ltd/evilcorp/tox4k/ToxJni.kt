@@ -1,6 +1,7 @@
 package ltd.evilcorp.tox4k
 
 typealias ToxJniOptions = Long
+typealias ToxInstance = Long
 
 class ToxJni {
     // API version
@@ -56,7 +57,10 @@ class ToxJni {
         ERROR,
     }
 
-//    typedef void tox_log_cb(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line, const char *func, const char *message, void *user_data);
+    interface ILogCallbackListener {
+        fun onLog(tox: ToxInstance, level: LogLevel, file: String, line: Long, func: String, message: String)
+    }
+
     external fun optionsGetIpv6Enabled(options: ToxJniOptions): Boolean
     external fun optionsSetIpv6Enabled(options: ToxJniOptions, enabled: Boolean)
     external fun optionsGetUdpEnabled(options: ToxJniOptions): Boolean
@@ -83,10 +87,8 @@ class ToxJni {
     external fun optionsSetSavedataData(options: ToxJniOptions, data: ByteArray)
     external fun optionsGetSavedataLength(options: ToxJniOptions): Long
     external fun optionsSetSavedataLength(options: ToxJniOptions, length: Long)
-//    tox_log_cb *tox_options_get_log_callback(const struct Tox_Options *options);
-//    void tox_options_set_log_callback(struct Tox_Options *options, tox_log_cb *callback);
-//    void *tox_options_get_log_user_data(const struct Tox_Options *options);
-//    void tox_options_set_log_user_data(struct Tox_Options *options, void *user_data);
+    external fun optionsGetLogCallback(options: ToxJniOptions): ILogCallbackListener
+    external fun optionsSetLogCallback(options: ToxJniOptions, callbackListener: ILogCallbackListener)
     external fun optionsDefault(options: ToxJniOptions)
 
     external fun optionsNew(): ToxJniOptions

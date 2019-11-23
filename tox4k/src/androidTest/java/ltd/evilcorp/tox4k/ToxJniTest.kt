@@ -1,5 +1,6 @@
 package ltd.evilcorp.tox4k
 
+import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.*
 import org.junit.Test
@@ -127,6 +128,44 @@ class ToxJniTest {
 
         assertArrayEquals(bytes, optionsGetSavedataData(options))
         assertEquals(bytes.size.toLong(), optionsGetSavedataLength(options))
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun log_callbacks_work(): Unit = with(ToxJni()) {
+        val options = optionsNew()
+
+        var someVariable = 0
+
+        val callback = object : ToxJni.ILogCallbackListener {
+            override fun onLog(
+                tox: ToxInstance,
+                level: ToxJni.LogLevel,
+                file: String,
+                line: Long,
+                func: String,
+                message: String
+            ) {
+                val msg = "$file $line $func $message"
+                when (level) {
+                    ToxJni.LogLevel.TRACE -> Log.v("LogCallback", msg)
+                    ToxJni.LogLevel.DEBUG -> Log.d("LogCallback", msg)
+                    ToxJni.LogLevel.INFO -> Log.i("LogCallback", msg)
+                    ToxJni.LogLevel.WARNING -> Log.w("LogCallback", msg)
+                    ToxJni.LogLevel.ERROR -> Log.e("LogCallback", msg)
+                }
+
+                someVariable++
+            }
+        }
+
+        optionsSetLogCallback(options, callback)
+        assertEquals(callback, optionsGetLogCallback(options))
+
+        assertEquals(0, someVariable)
+        optionsGetLogCallback(options).onLog(0, ToxJni.LogLevel.TRACE, "file", 1, "func", "message")
+        assertEquals(1, someVariable)
 
         optionsFree(options)
     }

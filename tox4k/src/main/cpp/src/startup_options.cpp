@@ -15,9 +15,12 @@ namespace {
             free(proxy_host);
         }
 
+        JavaVM *jvm{nullptr};
+
         Tox_Options *const options{tox_options_new(nullptr)};
         uint8_t *save_data{nullptr};
         char *proxy_host{nullptr};
+        jobject log_callback{nullptr}; // TODO(robinlinden): Move callbacks into dedicated class.
     };
 
     inline auto as_options(jlong options) -> Tox_Options * {
@@ -29,6 +32,62 @@ namespace {
     }
 
     const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$ProxyType";
+
+    void tox_log_callback(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line,
+                          const char *func, const char *message, void *user_data) {
+        const auto *container = reinterpret_cast<options_container *>(user_data);
+        if (container->log_callback == nullptr) return;
+
+        JNIEnv *env;
+        container->jvm->AttachCurrentThread(&env, nullptr);
+
+        jclass callback_class = env->GetObjectClass(container->log_callback);
+        jmethodID callback_method = env->GetMethodID(
+                callback_class,
+                "onLog",
+                "(JLltd/evilcorp/tox4k/ToxJni$LogLevel;Ljava/lang/String;Jjava/lang/String;java/lang/String;)V");
+
+        jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
+        jfieldID enum_field;
+
+        switch (level) {
+            case TOX_LOG_LEVEL_TRACE:
+                enum_field = env->GetStaticFieldID(enum_class, "TRACE",
+                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
+                break;
+            case TOX_LOG_LEVEL_DEBUG:
+                enum_field = env->GetStaticFieldID(enum_class, "DEBUG",
+                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
+                break;
+            case TOX_LOG_LEVEL_INFO:
+                enum_field = env->GetStaticFieldID(enum_class, "INFO",
+                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
+                break;
+            case TOX_LOG_LEVEL_WARNING:
+                enum_field = env->GetStaticFieldID(enum_class, "WARNING",
+                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
+                break;
+            case TOX_LOG_LEVEL_ERROR:
+                enum_field = env->GetStaticFieldID(enum_class, "ERROR",
+                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
+                break;
+        }
+
+        jobject jlevel = env->GetStaticObjectField(enum_class, enum_field);
+
+        jstring jfile = env->NewStringUTF(file);
+        jstring jfunc = env->NewStringUTF(func);
+        jstring jmessage = env->NewStringUTF(message);
+
+        env->CallVoidMethod(container->log_callback, callback_method, reinterpret_cast<jlong>(tox),
+                            jlevel, jfile, static_cast<jlong>(line), jfunc, jmessage);
+
+        env->DeleteLocalRef(jmessage);
+        env->DeleteLocalRef(jfunc);
+        env->DeleteLocalRef(jfile);
+
+        container->jvm->DetachCurrentThread();
+    }
 }
 
 extern "C" {
@@ -74,13 +133,16 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyType(JNIEnv *env, jobject, jlong o
 
     switch (tox_options_get_proxy_type(as_options(options))) {
         case TOX_PROXY_TYPE_NONE:
-            enum_field = env->GetStaticFieldID(enum_class, "NONE", "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
+            enum_field = env->GetStaticFieldID(enum_class, "NONE",
+                                               "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
             break;
         case TOX_PROXY_TYPE_HTTP:
-            enum_field = env->GetStaticFieldID(enum_class, "HTTP", "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
+            enum_field = env->GetStaticFieldID(enum_class, "HTTP",
+                                               "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
             break;
         case TOX_PROXY_TYPE_SOCKS5:
-            enum_field = env->GetStaticFieldID(enum_class, "SOCKS5", "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
+            enum_field = env->GetStaticFieldID(enum_class, "SOCKS5",
+                                               "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
             break;
     }
 
@@ -215,6 +277,18 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataLength(JNIEnv *, jobject, jlong
     tox_options_set_savedata_length(as_options(options), static_cast<uint32_t>(length));
 }
 
+// LogCallback
+JNIEXPORT jobject JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsGetLogCallback(JNIEnv *, jobject, jlong options) {
+    return as_container(options)->log_callback;
+}
+JNIEXPORT void JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsSetLogCallback(JNIEnv *env, jobject, jlong options,
+                                                     jobject callback) {
+    if (as_container(options)->log_callback != nullptr) env->DeleteGlobalRef(callback);
+    as_container(options)->log_callback = env->NewGlobalRef(callback);
+}
+
 // Default
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsDefault(JNIEnv *, jobject, jlong options) {
@@ -223,7 +297,10 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsDefault(JNIEnv *, jobject, jlong options) 
 
 // Lifecycle
 JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsNew(JNIEnv *, jobject) {
+Java_ltd_evilcorp_tox4k_ToxJni_optionsNew(JNIEnv *env, jobject) {
+    auto *c = new options_container;
+    env->GetJavaVM(&c->jvm);
+    tox_options_set_log_callback(c->options, tox_log_callback);
     return reinterpret_cast<jlong>(new options_container);
 }
 JNIEXPORT void JNICALL
