@@ -32,6 +32,77 @@ namespace {
     }
 
     const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$ProxyType";
+    const char *PROXY_TYPE_ARG = "Lltd/evilcorp/tox4k/ToxJni$ProxyType;";
+    const char *LOG_LEVEL_ARG = "Lltd/evilcorp/tox4k/ToxJni$LogLevel;";
+
+    jobject make_java_log_level(JNIEnv *env, TOX_LOG_LEVEL log_level) {
+        jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
+        jfieldID enum_field;
+
+        switch (log_level) {
+            case TOX_LOG_LEVEL_TRACE:
+                enum_field = env->GetStaticFieldID(enum_class, "TRACE", LOG_LEVEL_ARG);
+                break;
+            case TOX_LOG_LEVEL_DEBUG:
+                enum_field = env->GetStaticFieldID(enum_class, "DEBUG", LOG_LEVEL_ARG);
+                break;
+            case TOX_LOG_LEVEL_INFO:
+                enum_field = env->GetStaticFieldID(enum_class, "INFO", LOG_LEVEL_ARG);
+                break;
+            case TOX_LOG_LEVEL_WARNING:
+                enum_field = env->GetStaticFieldID(enum_class, "WARNING", LOG_LEVEL_ARG);
+                break;
+            case TOX_LOG_LEVEL_ERROR:
+                enum_field = env->GetStaticFieldID(enum_class, "ERROR", LOG_LEVEL_ARG);
+                break;
+            default:
+                assert(false);
+        }
+
+        return env->GetStaticObjectField(enum_class, enum_field);
+    }
+
+    TOX_PROXY_TYPE make_c_proxy_type(JNIEnv *env, jobject proxy_type) {
+        jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
+        jmethodID get_name = env->GetMethodID(enum_class, "name", "()Ljava/lang/String;");
+        const auto java_name = static_cast<jstring>(env->CallObjectMethod(proxy_type, get_name));
+        const char *name = env->GetStringUTFChars(java_name, nullptr);
+
+        TOX_PROXY_TYPE c_type;
+        if (strcmp(name, "NONE") == 0) {
+            c_type = TOX_PROXY_TYPE_NONE;
+        } else if (strcmp(name, "HTTP") == 0) {
+            c_type = TOX_PROXY_TYPE_HTTP;
+        } else if (strcmp(name, "SOCKS5") == 0) {
+            c_type = TOX_PROXY_TYPE_SOCKS5;
+        } else {
+            assert(false);
+        }
+
+        env->ReleaseStringUTFChars(java_name, name);
+        return c_type;
+    }
+
+    jobject make_java_proxy_type(JNIEnv *env, TOX_PROXY_TYPE proxy_type) {
+        jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
+        jfieldID enum_field;
+
+        switch (proxy_type) {
+            case TOX_PROXY_TYPE_NONE:
+                enum_field = env->GetStaticFieldID(enum_class, "NONE", PROXY_TYPE_ARG);
+                break;
+            case TOX_PROXY_TYPE_HTTP:
+                enum_field = env->GetStaticFieldID(enum_class, "HTTP", PROXY_TYPE_ARG);
+                break;
+            case TOX_PROXY_TYPE_SOCKS5:
+                enum_field = env->GetStaticFieldID(enum_class, "SOCKS5", PROXY_TYPE_ARG);
+                break;
+            default:
+                assert(false);
+        }
+
+        return env->GetStaticObjectField(enum_class, enum_field);
+    }
 
     void tox_log_callback(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line,
                           const char *func, const char *message, void *user_data) {
@@ -47,33 +118,7 @@ namespace {
                 "onLog",
                 "(JLltd/evilcorp/tox4k/ToxJni$LogLevel;Ljava/lang/String;Jjava/lang/String;java/lang/String;)V");
 
-        jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
-        jfieldID enum_field;
-
-        switch (level) {
-            case TOX_LOG_LEVEL_TRACE:
-                enum_field = env->GetStaticFieldID(enum_class, "TRACE",
-                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
-                break;
-            case TOX_LOG_LEVEL_DEBUG:
-                enum_field = env->GetStaticFieldID(enum_class, "DEBUG",
-                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
-                break;
-            case TOX_LOG_LEVEL_INFO:
-                enum_field = env->GetStaticFieldID(enum_class, "INFO",
-                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
-                break;
-            case TOX_LOG_LEVEL_WARNING:
-                enum_field = env->GetStaticFieldID(enum_class, "WARNING",
-                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
-                break;
-            case TOX_LOG_LEVEL_ERROR:
-                enum_field = env->GetStaticFieldID(enum_class, "ERROR",
-                                                   "Lltd/evilcorp/tox4k/ToxJni$LogLevel;");
-                break;
-        }
-
-        jobject jlevel = env->GetStaticObjectField(enum_class, enum_field);
+        jobject jlevel = make_java_log_level(env, level);
 
         jstring jfile = env->NewStringUTF(file);
         jstring jfunc = env->NewStringUTF(func);
@@ -128,44 +173,13 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetLocalDiscoveryEnabled(JNIEnv *, jobject
 // ProxyType
 JNIEXPORT jobject JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyType(JNIEnv *env, jobject, jlong options) {
-    jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
-    jfieldID enum_field;
-
-    switch (tox_options_get_proxy_type(as_options(options))) {
-        case TOX_PROXY_TYPE_NONE:
-            enum_field = env->GetStaticFieldID(enum_class, "NONE",
-                                               "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
-            break;
-        case TOX_PROXY_TYPE_HTTP:
-            enum_field = env->GetStaticFieldID(enum_class, "HTTP",
-                                               "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
-            break;
-        case TOX_PROXY_TYPE_SOCKS5:
-            enum_field = env->GetStaticFieldID(enum_class, "SOCKS5",
-                                               "Lltd/evilcorp/tox4k/ToxJni$ProxyType;");
-            break;
-    }
-
-    return env->GetStaticObjectField(enum_class, enum_field);
+    return make_java_proxy_type(env, tox_options_get_proxy_type(as_options(options)));
 }
 
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyType(JNIEnv *env, jobject, jlong options,
                                                    jobject proxy_type) {
-    jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
-    jmethodID get_name = env->GetMethodID(enum_class, "name", "()Ljava/lang/String;");
-    jstring java_name = static_cast<jstring>(env->CallObjectMethod(proxy_type, get_name));
-    const char *name = env->GetStringUTFChars(java_name, nullptr);
-
-    if (strcmp(name, "NONE") == 0) {
-        tox_options_set_proxy_type(as_options(options), TOX_PROXY_TYPE_NONE);
-    } else if (strcmp(name, "HTTP") == 0) {
-        tox_options_set_proxy_type(as_options(options), TOX_PROXY_TYPE_HTTP);
-    } else if (strcmp(name, "SOCKS5") == 0) {
-        tox_options_set_proxy_type(as_options(options), TOX_PROXY_TYPE_SOCKS5);
-    }
-
-    env->ReleaseStringUTFChars(java_name, name);
+    tox_options_set_proxy_type(as_options(options), make_c_proxy_type(env, proxy_type));
 }
 
 // ProxyHost
