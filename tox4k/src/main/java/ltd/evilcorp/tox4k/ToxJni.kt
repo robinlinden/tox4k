@@ -81,8 +81,8 @@ class ToxJni {
     external fun optionsSetTcpPort(options: ToxJniOptions, port: Int)
     external fun optionsGetHolePunchingEnabled(options: ToxJniOptions): Boolean
     external fun optionsSetHolePunchingEnabled(options: ToxJniOptions, enabled: Boolean)
-//    TOX_SAVEDATA_TYPE tox_options_get_savedata_type(const struct Tox_Options *options);
-//    void tox_options_set_savedata_type(struct Tox_Options *options, TOX_SAVEDATA_TYPE type);
+    external fun optionsGetSavedataType(options: ToxJniOptions): SavedataType
+    external fun optionsSetSavedataType(options: ToxJniOptions, type: SavedataType)
     external fun optionsGetSavedataData(options: ToxJniOptions): ByteArray
     external fun optionsSetSavedataData(options: ToxJniOptions, data: ByteArray)
     external fun optionsGetSavedataLength(options: ToxJniOptions): Long

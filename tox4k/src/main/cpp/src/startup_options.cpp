@@ -34,6 +34,8 @@ namespace {
     const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$ProxyType";
     const char *PROXY_TYPE_ARG = "Lltd/evilcorp/tox4k/ToxJni$ProxyType;";
     const char *LOG_LEVEL_ARG = "Lltd/evilcorp/tox4k/ToxJni$LogLevel;";
+    const char *SAVEDATA_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$SavedataType";
+    const char *SAVEDATA_TYPE_ARG= "Lltd/evilcorp/tox4k/ToxJni$SavedataType;";
 
     jobject make_java_log_level(JNIEnv *env, TOX_LOG_LEVEL log_level) {
         jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
@@ -96,6 +98,48 @@ namespace {
                 break;
             case TOX_PROXY_TYPE_SOCKS5:
                 enum_field = env->GetStaticFieldID(enum_class, "SOCKS5", PROXY_TYPE_ARG);
+                break;
+            default:
+                assert(false);
+        }
+
+        return env->GetStaticObjectField(enum_class, enum_field);
+    }
+
+    TOX_SAVEDATA_TYPE make_c_savedata_type(JNIEnv *env, jobject savedata_type) {
+        jclass enum_class = env->FindClass(SAVEDATA_TYPE_CLASS);
+        jmethodID get_name = env->GetMethodID(enum_class, "name", "()Ljava/lang/String;");
+        const auto java_name = static_cast<jstring>(env->CallObjectMethod(savedata_type, get_name));
+        const char *name = env->GetStringUTFChars(java_name, nullptr);
+
+        TOX_SAVEDATA_TYPE c_type;
+        if (strcmp(name, "NONE") == 0) {
+            c_type = TOX_SAVEDATA_TYPE_NONE;
+        } else if (strcmp(name, "TOX_SAVE") == 0) {
+            c_type = TOX_SAVEDATA_TYPE_TOX_SAVE;
+        } else if (strcmp(name, "SECRET_KEY") == 0) {
+            c_type = TOX_SAVEDATA_TYPE_SECRET_KEY;
+        } else {
+            assert(false);
+        }
+
+        env->ReleaseStringUTFChars(java_name, name);
+        return c_type;
+    }
+
+    jobject make_java_savedata_type(JNIEnv *env, TOX_SAVEDATA_TYPE savedata_type) {
+        jclass enum_class = env->FindClass(SAVEDATA_TYPE_CLASS);
+        jfieldID enum_field;
+
+        switch (savedata_type) {
+            case TOX_SAVEDATA_TYPE_NONE:
+                enum_field = env->GetStaticFieldID(enum_class, "NONE", SAVEDATA_TYPE_ARG);
+                break;
+            case TOX_SAVEDATA_TYPE_TOX_SAVE:
+                enum_field = env->GetStaticFieldID(enum_class, "TOX_SAVE", SAVEDATA_TYPE_ARG);
+                break;
+            case TOX_SAVEDATA_TYPE_SECRET_KEY:
+                enum_field = env->GetStaticFieldID(enum_class, "SECRET_KEY", SAVEDATA_TYPE_ARG);
                 break;
             default:
                 assert(false);
@@ -251,6 +295,18 @@ JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsSetHolePunchingEnabled(JNIEnv *, jobject, jlong options,
                                                              jboolean enabled) {
     tox_options_set_hole_punching_enabled(as_options(options), enabled);
+}
+
+// SavedataType
+JNIEXPORT jobject JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataType(JNIEnv *env, jobject, jlong options) {
+    return make_java_savedata_type(env, tox_options_get_savedata_type(as_options(options)));
+}
+
+JNIEXPORT void JNICALL
+Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataType(JNIEnv *env, jobject, jlong options,
+                                                   jobject savedata_type) {
+    tox_options_set_savedata_type(as_options(options), make_c_savedata_type(env, savedata_type));
 }
 
 // SavedataData

@@ -113,6 +113,22 @@ class ToxJniTest {
     }
 
     @Test
+    fun the_savedata_types_work(): Unit = with(ToxJni()) {
+        val options = optionsNew()
+
+        optionsSetSavedataType(options, ToxJni.SavedataType.NONE)
+        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.NONE)
+        optionsSetSavedataType(options, ToxJni.SavedataType.SECRET_KEY)
+        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.SECRET_KEY)
+        optionsSetSavedataType(options, ToxJni.SavedataType.TOX_SAVE)
+        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.TOX_SAVE)
+        optionsSetSavedataType(options, ToxJni.SavedataType.NONE)
+        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.NONE)
+
+        optionsFree(options)
+    }
+
+    @Test
     fun savedata_works(): Unit = with(ToxJni()) {
         // TODO(robinlinden): Test with known data and read expected values from the loaded save.
         val options = optionsNew()
