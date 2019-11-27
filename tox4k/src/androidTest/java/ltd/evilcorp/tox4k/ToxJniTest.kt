@@ -100,14 +100,14 @@ class ToxJniTest {
     fun the_proxy_types_work(): Unit = with(ToxJni()) {
         val options = optionsNew()
 
-        optionsSetProxyType(options, ToxJni.ProxyType.NONE)
-        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.NONE)
-        optionsSetProxyType(options, ToxJni.ProxyType.HTTP)
-        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.HTTP)
-        optionsSetProxyType(options, ToxJni.ProxyType.SOCKS5)
-        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.SOCKS5)
-        optionsSetProxyType(options, ToxJni.ProxyType.NONE)
-        assertEquals(optionsGetProxyType(options), ToxJni.ProxyType.NONE)
+        optionsSetProxyType(options, ProxyType.NONE)
+        assertEquals(optionsGetProxyType(options), ProxyType.NONE)
+        optionsSetProxyType(options, ProxyType.HTTP)
+        assertEquals(optionsGetProxyType(options), ProxyType.HTTP)
+        optionsSetProxyType(options, ProxyType.SOCKS5)
+        assertEquals(optionsGetProxyType(options), ProxyType.SOCKS5)
+        optionsSetProxyType(options, ProxyType.NONE)
+        assertEquals(optionsGetProxyType(options), ProxyType.NONE)
 
         optionsFree(options)
     }
@@ -116,14 +116,14 @@ class ToxJniTest {
     fun the_savedata_types_work(): Unit = with(ToxJni()) {
         val options = optionsNew()
 
-        optionsSetSavedataType(options, ToxJni.SavedataType.NONE)
-        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.NONE)
-        optionsSetSavedataType(options, ToxJni.SavedataType.SECRET_KEY)
-        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.SECRET_KEY)
-        optionsSetSavedataType(options, ToxJni.SavedataType.TOX_SAVE)
-        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.TOX_SAVE)
-        optionsSetSavedataType(options, ToxJni.SavedataType.NONE)
-        assertEquals(optionsGetSavedataType(options), ToxJni.SavedataType.NONE)
+        optionsSetSavedataType(options, SavedataType.NONE)
+        assertEquals(optionsGetSavedataType(options), SavedataType.NONE)
+        optionsSetSavedataType(options, SavedataType.SECRET_KEY)
+        assertEquals(optionsGetSavedataType(options), SavedataType.SECRET_KEY)
+        optionsSetSavedataType(options, SavedataType.TOX_SAVE)
+        assertEquals(optionsGetSavedataType(options), SavedataType.TOX_SAVE)
+        optionsSetSavedataType(options, SavedataType.NONE)
+        assertEquals(optionsGetSavedataType(options), SavedataType.NONE)
 
         optionsFree(options)
     }
@@ -157,7 +157,7 @@ class ToxJniTest {
         val callback = object : ToxJni.ILogCallbackListener {
             override fun onLog(
                 tox: ToxInstance,
-                level: ToxJni.LogLevel,
+                level: LogLevel,
                 file: String,
                 line: Long,
                 func: String,
@@ -165,11 +165,11 @@ class ToxJniTest {
             ) {
                 val msg = "$file $line $func $message"
                 when (level) {
-                    ToxJni.LogLevel.TRACE -> Log.v("LogCallback", msg)
-                    ToxJni.LogLevel.DEBUG -> Log.d("LogCallback", msg)
-                    ToxJni.LogLevel.INFO -> Log.i("LogCallback", msg)
-                    ToxJni.LogLevel.WARNING -> Log.w("LogCallback", msg)
-                    ToxJni.LogLevel.ERROR -> Log.e("LogCallback", msg)
+                    LogLevel.TRACE -> Log.v("LogCallback", msg)
+                    LogLevel.DEBUG -> Log.d("LogCallback", msg)
+                    LogLevel.INFO -> Log.i("LogCallback", msg)
+                    LogLevel.WARNING -> Log.w("LogCallback", msg)
+                    LogLevel.ERROR -> Log.e("LogCallback", msg)
                 }
 
                 someVariable++
@@ -180,7 +180,7 @@ class ToxJniTest {
         assertEquals(callback, optionsGetLogCallback(options))
 
         assertEquals(0, someVariable)
-        optionsGetLogCallback(options).onLog(0, ToxJni.LogLevel.TRACE, "file", 1, "func", "message")
+        optionsGetLogCallback(options).onLog(0, LogLevel.TRACE, "file", 1, "func", "message")
         assertEquals(1, someVariable)
 
         optionsFree(options)

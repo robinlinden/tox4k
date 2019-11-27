@@ -3,6 +3,36 @@ package ltd.evilcorp.tox4k
 typealias ToxJniOptions = Long
 typealias ToxInstance = Long
 
+// Global enumerations
+enum class UserStatus {
+    NONE,
+    AWAY,
+    BUSY,
+}
+enum class MessageType {
+    NORMAL,
+    ACTION,
+}
+
+// Startup options
+enum class ProxyType {
+    NONE,
+    HTTP,
+    SOCKS5,
+}
+enum class SavedataType {
+    NONE,
+    TOX_SAVE,
+    SECRET_KEY,
+}
+enum class LogLevel {
+    TRACE,
+    DEBUG,
+    INFO,
+    WARNING,
+    ERROR,
+}
+
 class ToxJni {
     // API version
     external fun versionMajor(): Long
@@ -27,36 +57,7 @@ class ToxJni {
     external fun maxFilenameLength(): Long
     external fun maxHostnameLength(): Long
 
-    // Global enumerations
-    enum class UserStatus {
-        NONE,
-        AWAY,
-        BUSY,
-    }
-    enum class MessageType {
-        NORMAL,
-        ACTION,
-    }
-
     // Startup options
-    enum class ProxyType {
-        NONE,
-        HTTP,
-        SOCKS5,
-    }
-    enum class SavedataType {
-        NONE,
-        TOX_SAVE,
-        SECRET_KEY,
-    }
-    enum class LogLevel {
-        TRACE,
-        DEBUG,
-        INFO,
-        WARNING,
-        ERROR,
-    }
-
     interface ILogCallbackListener {
         fun onLog(tox: ToxInstance, level: LogLevel, file: String, line: Long, func: String, message: String)
     }

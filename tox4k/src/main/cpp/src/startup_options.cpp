@@ -31,11 +31,11 @@ namespace {
         return reinterpret_cast<options_container *>(options);
     }
 
-    const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$ProxyType";
-    const char *PROXY_TYPE_ARG = "Lltd/evilcorp/tox4k/ToxJni$ProxyType;";
-    const char *LOG_LEVEL_ARG = "Lltd/evilcorp/tox4k/ToxJni$LogLevel;";
-    const char *SAVEDATA_TYPE_CLASS = "ltd/evilcorp/tox4k/ToxJni$SavedataType";
-    const char *SAVEDATA_TYPE_ARG= "Lltd/evilcorp/tox4k/ToxJni$SavedataType;";
+    const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ProxyType";
+    const char *PROXY_TYPE_ARG = "Lltd/evilcorp/tox4k/ProxyType;";
+    const char *LOG_LEVEL_ARG = "Lltd/evilcorp/tox4k/LogLevel;";
+    const char *SAVEDATA_TYPE_CLASS = "ltd/evilcorp/tox4k/SavedataType";
+    const char *SAVEDATA_TYPE_ARG= "Lltd/evilcorp/tox4k/SavedataType;";
 
     jobject make_java_log_level(JNIEnv *env, TOX_LOG_LEVEL log_level) {
         jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
@@ -160,7 +160,7 @@ namespace {
         jmethodID callback_method = env->GetMethodID(
                 callback_class,
                 "onLog",
-                "(JLltd/evilcorp/tox4k/ToxJni$LogLevel;Ljava/lang/String;Jjava/lang/String;java/lang/String;)V");
+                "(JLltd/evilcorp/tox4k/LogLevel;Ljava/lang/String;Jjava/lang/String;java/lang/String;)V");
 
         jobject jlevel = make_java_log_level(env, level);
 
