@@ -11,20 +11,20 @@ private fun byteArrayOf(vararg bytes: Int) = ByteArray(bytes.size) { bytes[it].t
 @RunWith(AndroidJUnit4::class)
 class ToxJniTest {
     @Test
-    fun api_version_functions_can_be_called(): Unit = with(ToxJni()) {
+    fun api_version_functions_can_be_called(): Unit = with(ToxJni) {
         versionMajor()
         versionMinor()
         versionPatch()
     }
 
     @Test
-    fun version_compatibility_seems_to_work(): Unit = with(ToxJni()) {
+    fun version_compatibility_seems_to_work(): Unit = with(ToxJni) {
         assertTrue(versionIsCompatible(versionMajor(), versionMinor(), versionPatch()))
         assertFalse(versionIsCompatible(versionMajor() + 1, versionMinor(), versionPatch()))
     }
 
     @Test
-    fun numeric_constant_functions_can_be_called(): Unit = with(ToxJni()) {
+    fun numeric_constant_functions_can_be_called(): Unit = with(ToxJni) {
         publicKeySize()
         secretKeySize()
         conferenceUidSize()
@@ -43,7 +43,7 @@ class ToxJniTest {
     }
 
     @Test
-    fun the_options_probably_work(): Unit = with(ToxJni()) {
+    fun the_options_probably_work(): Unit = with(ToxJni) {
         val options = optionsNew()
 
         optionsSetIpv6Enabled(options, true)
@@ -97,7 +97,7 @@ class ToxJniTest {
     }
 
     @Test
-    fun the_proxy_types_work(): Unit = with(ToxJni()) {
+    fun the_proxy_types_work(): Unit = with(ToxJni) {
         val options = optionsNew()
 
         optionsSetProxyType(options, ProxyType.NONE)
@@ -113,7 +113,7 @@ class ToxJniTest {
     }
 
     @Test
-    fun the_savedata_types_work(): Unit = with(ToxJni()) {
+    fun the_savedata_types_work(): Unit = with(ToxJni) {
         val options = optionsNew()
 
         optionsSetSavedataType(options, SavedataType.NONE)
@@ -129,7 +129,7 @@ class ToxJniTest {
     }
 
     @Test
-    fun savedata_works(): Unit = with(ToxJni()) {
+    fun savedata_works(): Unit = with(ToxJni) {
         // TODO(robinlinden): Test with known data and read expected values from the loaded save.
         val options = optionsNew()
 
@@ -149,7 +149,7 @@ class ToxJniTest {
     }
 
     @Test
-    fun log_callbacks_work(): Unit = with(ToxJni()) {
+    fun log_callbacks_work(): Unit = with(ToxJni) {
         val options = optionsNew()
 
         var someVariable = 0
