@@ -33,6 +33,11 @@ android {
             version "3.14.1+"
         }
     }
+
+    sourceSets {
+        main.java.srcDirs += "src/main/kotlin"
+        androidTest.java.srcDirs += "src/androidTest/kotlin"
+    }
 }
 
 dependencies {
