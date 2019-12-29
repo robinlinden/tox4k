@@ -371,7 +371,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsNew(JNIEnv *env, jobject) {
     auto *c = new options_container;
     env->GetJavaVM(&c->jvm);
     tox_options_set_log_callback(c->options, tox_log_callback);
-    return reinterpret_cast<jlong>(new options_container);
+    return reinterpret_cast<jlong>(c);
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsFree(JNIEnv *, jobject, jlong options) {
