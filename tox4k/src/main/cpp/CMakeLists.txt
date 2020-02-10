@@ -18,6 +18,7 @@ FetchContent_MakeAvailable(Toxcore)
 
 add_library(${PROJECT_NAME} SHARED
     src/api_version.cpp
+    src/creation_and_destruction.cpp
     src/numeric_constants.cpp
     src/startup_options.cpp
     src/util.h

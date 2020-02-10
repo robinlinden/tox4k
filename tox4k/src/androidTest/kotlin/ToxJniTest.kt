@@ -156,7 +156,7 @@ class ToxJniTest {
 
         val callback = object : ToxJni.ILogCallbackListener {
             override fun onLog(
-                tox: ToxInstance,
+                tox: ToxHandle,
                 level: LogLevel,
                 file: String,
                 line: Long,
@@ -184,5 +184,21 @@ class ToxJniTest {
         assertEquals(1, someVariable)
 
         optionsFree(options)
+    }
+
+    @Test
+    fun tox_creation(): Unit = with(ToxJni) {
+        val options = optionsNew()
+
+        val tox = toxNew(options)
+        toxKill(tox)
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun tox_creation_without_options(): Unit = with(ToxJni) {
+        val tox = toxNew(null)
+        toxKill(tox)
     }
 }

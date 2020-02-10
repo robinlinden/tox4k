@@ -1,7 +1,7 @@
 package ltd.evilcorp.tox4k
 
 typealias ToxJniOptions = Long
-typealias ToxInstance = Long
+typealias ToxHandle = Long
 
 // Global enumerations
 enum class UserStatus {
@@ -36,7 +36,7 @@ enum class LogLevel {
 class ToxJni {
     // Startup options
     interface ILogCallbackListener {
-        fun onLog(tox: ToxInstance, level: LogLevel, file: String, line: Long, func: String, message: String)
+        fun onLog(tox: ToxHandle, level: LogLevel, file: String, line: Long, func: String, message: String)
     }
 
     companion object {
@@ -110,9 +110,10 @@ class ToxJni {
         //    TOX_ERR_NEW_LOAD_ENCRYPTED,
         //    TOX_ERR_NEW_LOAD_BAD_FORMAT,
         //} TOX_ERR_NEW;
-        //
-        //Tox *tox_new(const struct Tox_Options *options, TOX_ERR_NEW *error);
-        //void tox_kill(Tox *tox);
+
+        @JvmStatic external fun toxNew(options: ToxJniOptions?): ToxHandle
+        @JvmStatic external fun toxKill(tox: ToxHandle)
+
         //size_t tox_get_savedata_size(const Tox *tox);
         //void tox_get_savedata(const Tox *tox, uint8_t *savedata);
 
