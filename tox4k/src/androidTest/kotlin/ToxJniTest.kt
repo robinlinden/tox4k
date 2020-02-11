@@ -201,4 +201,20 @@ class ToxJniTest {
         val tox = toxNew(null)
         toxKill(tox)
     }
+
+    @Test
+    fun failure_to_create_tox_doesnt_exit_the_app(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetSavedataType(options, SavedataType.SECRET_KEY)
+
+        try {
+            val tox = toxNew(options)
+            toxKill(tox)
+            fail()
+        } catch (e: Exception) {
+            assertEquals(e.message, "load bad format")
+        } finally {
+            optionsFree(options)
+        }
+    }
 }
