@@ -1,3 +1,5 @@
+#include "util.h"
+
 #include <jni.h>
 #include <tox/tox.h>
 
@@ -5,32 +7,9 @@
 #include <cstdlib>
 #include <cstring>
 
+using namespace tox4k;
+
 namespace {
-    struct options_container {
-        options_container() = default;
-
-        ~options_container() {
-            tox_options_free(options);
-            free(save_data);
-            free(proxy_host);
-        }
-
-        JavaVM *jvm{nullptr};
-
-        Tox_Options *const options{tox_options_new(nullptr)};
-        uint8_t *save_data{nullptr};
-        char *proxy_host{nullptr};
-        jobject log_callback{nullptr}; // TODO(robinlinden): Move callbacks into dedicated class.
-    };
-
-    inline auto as_options(jlong options) -> Tox_Options * {
-        return reinterpret_cast<options_container *>(options)->options;
-    }
-
-    inline auto as_container(jlong options) -> options_container * {
-        return reinterpret_cast<options_container *>(options);
-    }
-
     const char *PROXY_TYPE_CLASS = "ltd/evilcorp/tox4k/ProxyType";
     const char *PROXY_TYPE_ARG = "Lltd/evilcorp/tox4k/ProxyType;";
     const char *LOG_LEVEL_ARG = "Lltd/evilcorp/tox4k/LogLevel;";
@@ -371,7 +350,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsNew(JNIEnv *env, jobject) {
     auto *c = new options_container;
     env->GetJavaVM(&c->jvm);
     tox_options_set_log_callback(c->options, tox_log_callback);
-    return reinterpret_cast<jlong>(c);
+    return as_jlong(c);
 }
 JNIEXPORT void JNICALL
 Java_ltd_evilcorp_tox4k_ToxJni_optionsFree(JNIEnv *, jobject, jlong options) {
