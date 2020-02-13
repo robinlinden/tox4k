@@ -111,7 +111,8 @@ class ToxJni {
         //    TOX_ERR_NEW_LOAD_BAD_FORMAT,
         //} TOX_ERR_NEW;
 
-        @JvmStatic external fun toxNew(options: ToxJniOptions?): ToxHandle
+        // TODO(robinlinden): ToxJniOptions?, toxNew supports null.
+        @JvmStatic external fun toxNew(options: ToxJniOptions): ToxHandle
         @JvmStatic external fun toxKill(tox: ToxHandle)
 
         //size_t tox_get_savedata_size(const Tox *tox);

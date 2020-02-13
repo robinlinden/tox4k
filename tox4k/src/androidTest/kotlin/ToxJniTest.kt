@@ -198,7 +198,7 @@ class ToxJniTest {
 
     @Test
     fun tox_creation_without_options(): Unit = with(ToxJni) {
-        val tox = toxNew(null)
+        val tox = toxNew(0)
         toxKill(tox)
     }
 
