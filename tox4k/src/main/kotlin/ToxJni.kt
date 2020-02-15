@@ -1,7 +1,7 @@
 package ltd.evilcorp.tox4k
 
 typealias ToxJniOptions = Long
-typealias ToxInstance = Long
+typealias ToxHandle = Long
 
 // Global enumerations
 enum class UserStatus {
@@ -33,10 +33,22 @@ enum class LogLevel {
     ERROR,
 }
 
+open class ToxJniException : Exception()
+open class ToxNewException : ToxJniException()
+class ToxNewNullException : ToxNewException()
+class ToxNewMallocException : ToxNewException()
+class ToxNewPortAllocException : ToxNewException()
+class ToxNewProxyBadTypeException : ToxNewException()
+class ToxNewProxyBadHostException : ToxNewException()
+class ToxNewProxyBadPortException : ToxNewException()
+class ToxNewProxyNotFoundException : ToxNewException()
+class ToxNewLoadEncryptedException : ToxNewException()
+class ToxNewLoadBadFormatException : ToxNewException()
+
 class ToxJni {
     // Startup options
     interface ILogCallbackListener {
-        fun onLog(tox: ToxInstance, level: LogLevel, file: String, line: Long, func: String, message: String)
+        fun onLog(tox: ToxHandle, level: LogLevel, file: String, line: Long, func: String, message: String)
     }
 
     companion object {
@@ -97,22 +109,10 @@ class ToxJni {
         @JvmStatic external fun optionsNew(): ToxJniOptions
         @JvmStatic external fun optionsFree(options: ToxJniOptions)
 
-        // Creation and destruction
-        //typedef enum TOX_ERR_NEW {
-        //    TOX_ERR_NEW_OK,
-        //    TOX_ERR_NEW_NULL,
-        //    TOX_ERR_NEW_MALLOC,
-        //    TOX_ERR_NEW_PORT_ALLOC,
-        //    TOX_ERR_NEW_PROXY_BAD_TYPE,
-        //    TOX_ERR_NEW_PROXY_BAD_HOST,
-        //    TOX_ERR_NEW_PROXY_BAD_PORT,
-        //    TOX_ERR_NEW_PROXY_NOT_FOUND,
-        //    TOX_ERR_NEW_LOAD_ENCRYPTED,
-        //    TOX_ERR_NEW_LOAD_BAD_FORMAT,
-        //} TOX_ERR_NEW;
-        //
-        //Tox *tox_new(const struct Tox_Options *options, TOX_ERR_NEW *error);
-        //void tox_kill(Tox *tox);
+        // TODO(robinlinden): ToxJniOptions?, toxNew supports null.
+        @JvmStatic external fun toxNew(options: ToxJniOptions): ToxHandle
+        @JvmStatic external fun toxKill(tox: ToxHandle)
+
         //size_t tox_get_savedata_size(const Tox *tox);
         //void tox_get_savedata(const Tox *tox, uint8_t *savedata);
 

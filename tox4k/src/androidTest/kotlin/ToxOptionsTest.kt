@@ -23,7 +23,7 @@ class ToxOptionsTest {
     fun it_is_possible_to_change_the_options() {
         val logCallbackListener = object : ToxJni.ILogCallbackListener {
             override fun onLog(
-                tox: ToxInstance,
+                tox: ToxHandle,
                 level: LogLevel,
                 file: String,
                 line: Long,

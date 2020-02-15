@@ -129,6 +129,8 @@ namespace {
 
     void tox_log_callback(Tox *tox, TOX_LOG_LEVEL level, const char *file, uint32_t line,
                           const char *func, const char *message, void *user_data) {
+        if (!user_data) return; // Nothing to call into Java with. :(
+
         const auto *container = reinterpret_cast<options_container *>(user_data);
         if (container->log_callback == nullptr) return;
 

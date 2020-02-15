@@ -156,7 +156,7 @@ class ToxJniTest {
 
         val callback = object : ToxJni.ILogCallbackListener {
             override fun onLog(
-                tox: ToxInstance,
+                tox: ToxHandle,
                 level: LogLevel,
                 file: String,
                 line: Long,
@@ -182,6 +182,79 @@ class ToxJniTest {
         assertEquals(0, someVariable)
         optionsGetLogCallback(options).onLog(0, LogLevel.TRACE, "file", 1, "func", "message")
         assertEquals(1, someVariable)
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun tox_creation(): Unit = with(ToxJni) {
+        val options = optionsNew()
+
+        val tox = toxNew(options)
+        toxKill(tox)
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun tox_creation_without_options(): Unit = with(ToxJni) {
+        val tox = toxNew(0)
+        toxKill(tox)
+    }
+
+    @Test
+    fun loading_secret_key_without_data(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetSavedataType(options, SavedataType.SECRET_KEY)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewLoadBadFormatException) {
+        }
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun loading_tox_save_without_data(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetSavedataType(options, SavedataType.TOX_SAVE)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewLoadBadFormatException) {
+        }
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun tox_with_port_in_banned_range(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetStartPort(options, 1)
+        optionsSetEndPort(options, 1)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewPortAllocException) {
+        }
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun proxy_without_specifying_a_port(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetProxyType(options, ProxyType.HTTP)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewProxyBadPortException) {
+        }
 
         optionsFree(options)
     }
