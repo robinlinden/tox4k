@@ -203,18 +203,59 @@ class ToxJniTest {
     }
 
     @Test
-    fun failure_to_create_tox_doesnt_exit_the_app(): Unit = with(ToxJni) {
+    fun loading_secret_key_without_data(): Unit = with(ToxJni) {
         val options = optionsNew()
         optionsSetSavedataType(options, SavedataType.SECRET_KEY)
 
         try {
-            val tox = toxNew(options)
-            toxKill(tox)
+            toxNew(options)
             fail()
-        } catch (e: Exception) {
-            assertEquals(e.message, "load bad format")
-        } finally {
-            optionsFree(options)
+        } catch (e: ToxNewLoadBadFormatException) {
         }
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun loading_tox_save_without_data(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetSavedataType(options, SavedataType.TOX_SAVE)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewLoadBadFormatException) {
+        }
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun tox_with_port_in_banned_range(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetStartPort(options, 1)
+        optionsSetEndPort(options, 1)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewPortAllocException) {
+        }
+
+        optionsFree(options)
+    }
+
+    @Test
+    fun proxy_without_specifying_a_port(): Unit = with(ToxJni) {
+        val options = optionsNew()
+        optionsSetProxyType(options, ProxyType.HTTP)
+
+        try {
+            toxNew(options)
+            fail()
+        } catch (e: ToxNewProxyBadPortException) {
+        }
+
+        optionsFree(options)
     }
 }
