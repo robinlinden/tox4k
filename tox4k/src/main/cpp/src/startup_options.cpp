@@ -14,7 +14,7 @@ namespace {
     const char *PROXY_TYPE_ARG = "Lltd/evilcorp/tox4k/ProxyType;";
     const char *LOG_LEVEL_ARG = "Lltd/evilcorp/tox4k/LogLevel;";
     const char *SAVEDATA_TYPE_CLASS = "ltd/evilcorp/tox4k/SavedataType";
-    const char *SAVEDATA_TYPE_ARG= "Lltd/evilcorp/tox4k/SavedataType;";
+    const char *SAVEDATA_TYPE_ARG = "Lltd/evilcorp/tox4k/SavedataType;";
 
     jobject make_java_log_level(JNIEnv *env, TOX_LOG_LEVEL log_level) {
         jclass enum_class = env->FindClass(PROXY_TYPE_CLASS);
@@ -163,58 +163,43 @@ namespace {
 extern "C" {
 
 // Ipv6
-JNIEXPORT jboolean JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetIpv6Enabled(JNIEnv *, jobject, jlong options) {
+T4K(jboolean, optionsGetIpv6Enabled)(JNIEnv *, jobject, jlong options) {
     return static_cast<jboolean>(tox_options_get_ipv6_enabled(as_options(options)));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetIpv6Enabled(JNIEnv *, jobject, jlong options,
-                                                     jboolean enabled) {
+T4K(void, optionsSetIpv6Enabled)(JNIEnv *, jobject, jlong options, jboolean enabled) {
     tox_options_set_ipv6_enabled(as_options(options), enabled);
 }
 
 // Udp
-JNIEXPORT jboolean JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetUdpEnabled(JNIEnv *, jobject, jlong options) {
+T4K(jboolean, optionsGetUdpEnabled)(JNIEnv *, jobject, jlong options) {
     return static_cast<jboolean>(tox_options_get_udp_enabled(as_options(options)));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetUdpEnabled(JNIEnv *, jobject, jlong options,
-                                                    jboolean enabled) {
+T4K(void, optionsSetUdpEnabled)(JNIEnv *, jobject, jlong options, jboolean enabled) {
     tox_options_set_udp_enabled(as_options(options), enabled);
 }
 
 // LocalDiscovery
-JNIEXPORT jboolean JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetLocalDiscoveryEnabled(JNIEnv *, jobject, jlong options) {
+T4K(jboolean, optionsGetLocalDiscoveryEnabled)(JNIEnv *, jobject, jlong options) {
     return static_cast<jboolean>(tox_options_get_local_discovery_enabled(as_options(options)));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetLocalDiscoveryEnabled(JNIEnv *, jobject, jlong options,
-                                                               jboolean enabled) {
+T4K(void, optionsSetLocalDiscoveryEnabled)(JNIEnv *, jobject, jlong options, jboolean enabled) {
     tox_options_set_local_discovery_enabled(as_options(options), enabled);
 }
 
 // ProxyType
-JNIEXPORT jobject JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyType(JNIEnv *env, jobject, jlong options) {
+T4K(jobject, optionsGetProxyType)(JNIEnv *env, jobject, jlong options) {
     return make_java_proxy_type(env, tox_options_get_proxy_type(as_options(options)));
 }
 
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyType(JNIEnv *env, jobject, jlong options,
-                                                   jobject proxy_type) {
+T4K(void, optionsSetProxyType)(JNIEnv *env, jobject, jlong options, jobject proxy_type) {
     tox_options_set_proxy_type(as_options(options), make_c_proxy_type(env, proxy_type));
 }
 
 // ProxyHost
-JNIEXPORT jstring JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyHost(JNIEnv *env, jobject, jlong options) {
+T4K(jstring, optionsGetProxyHost)(JNIEnv *env, jobject, jlong options) {
     return env->NewStringUTF(tox_options_get_proxy_host(as_options(options)));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyHost(JNIEnv *env, jobject, jlong options,
-                                                   jstring proxyHost) {
+T4K(void, optionsSetProxyHost)(JNIEnv *env, jobject, jlong options, jstring proxyHost) {
     const char *asChars = env->GetStringUTFChars(proxyHost, nullptr);
 
     as_container(options)->proxy_host = strdup(asChars);
@@ -224,75 +209,60 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyHost(JNIEnv *env, jobject, jlong o
 }
 
 // ProxyPort
-JNIEXPORT jint JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetProxyPort(JNIEnv *, jobject, jlong options) {
+T4K(jint, optionsGetProxyPort)(JNIEnv *, jobject, jlong options) {
     return tox_options_get_proxy_port(as_options(options));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetProxyPort(JNIEnv *, jobject, jlong options, jint port) {
+T4K(void, optionsSetProxyPort)(JNIEnv *, jobject, jlong options, jint port) {
     if (port < 0) return;
     tox_options_set_proxy_port(as_options(options), static_cast<uint16_t>(port));
 }
 
 // StartPort
-JNIEXPORT jint JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetStartPort(JNIEnv *, jobject, jlong options) {
+T4K(jint, optionsGetStartPort)(JNIEnv *, jobject, jlong options) {
     return tox_options_get_start_port(as_options(options));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetStartPort(JNIEnv *, jobject, jlong options, jint port) {
+T4K(void, optionsSetStartPort)(JNIEnv *, jobject, jlong options, jint port) {
     if (port < 0) return;
     tox_options_set_start_port(as_options(options), static_cast<uint16_t>(port));
 }
 
 // EndPort
-JNIEXPORT jint JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetEndPort(JNIEnv *, jobject, jlong options) {
+T4K(jint, optionsGetEndPort)(JNIEnv *, jobject, jlong options) {
     return tox_options_get_end_port(as_options(options));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetEndPort(JNIEnv *, jobject, jlong options, jint port) {
+T4K(void, optionsSetEndPort)(JNIEnv *, jobject, jlong options, jint port) {
     if (port < 0) return;
     tox_options_set_end_port(as_options(options), static_cast<uint16_t>(port));
 }
 
 // TcpPort
-JNIEXPORT jint JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetTcpPort(JNIEnv *, jobject, jlong options) {
+T4K(jint, optionsGetTcpPort)(JNIEnv *, jobject, jlong options) {
     return tox_options_get_tcp_port(as_options(options));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetTcpPort(JNIEnv *, jobject, jlong options, jint port) {
+T4K(void, optionsSetTcpPort)(JNIEnv *, jobject, jlong options, jint port) {
     if (port < 0) return;
     tox_options_set_tcp_port(as_options(options), static_cast<uint16_t>(port));
 }
 
 // HolePunching
-JNIEXPORT jboolean JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetHolePunchingEnabled(JNIEnv *, jobject, jlong options) {
+T4K(jboolean, optionsGetHolePunchingEnabled)(JNIEnv *, jobject, jlong options) {
     return static_cast<jboolean>(tox_options_get_hole_punching_enabled(as_options(options)));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetHolePunchingEnabled(JNIEnv *, jobject, jlong options,
-                                                             jboolean enabled) {
+T4K(void, optionsSetHolePunchingEnabled)(JNIEnv *, jobject, jlong options, jboolean enabled) {
     tox_options_set_hole_punching_enabled(as_options(options), enabled);
 }
 
 // SavedataType
-JNIEXPORT jobject JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataType(JNIEnv *env, jobject, jlong options) {
+T4K(jobject, optionsGetSavedataType)(JNIEnv *env, jobject, jlong options) {
     return make_java_savedata_type(env, tox_options_get_savedata_type(as_options(options)));
 }
 
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataType(JNIEnv *env, jobject, jlong options,
-                                                   jobject savedata_type) {
+T4K(void, optionsSetSavedataType)(JNIEnv *env, jobject, jlong options, jobject savedata_type) {
     tox_options_set_savedata_type(as_options(options), make_c_savedata_type(env, savedata_type));
 }
 
 // SavedataData
-JNIEXPORT jbyteArray JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataData(JNIEnv *env, jobject, jlong options) {
+T4K(jbyteArray, optionsGetSavedataData)(JNIEnv *env, jobject, jlong options) {
     const auto *real_options = as_options(options);
 
     const auto *data = reinterpret_cast<const jbyte *>(tox_options_get_savedata_data(real_options));
@@ -303,9 +273,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataData(JNIEnv *env, jobject, jlon
 
     return savedata;
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataData(JNIEnv *env, jobject, jlong options,
-                                                      jbyteArray save_data) {
+T4K(void, optionsSetSavedataData)(JNIEnv *env, jobject, jlong options, jbyteArray save_data) {
     jsize length = env->GetArrayLength(save_data);
     assert(length >= 0);
 
@@ -317,45 +285,36 @@ Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataData(JNIEnv *env, jobject, jlon
 }
 
 // SavedataLength
-JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetSavedataLength(JNIEnv *, jobject, jlong options) {
+T4K(jlong, optionsGetSavedataLength)(JNIEnv *, jobject, jlong options) {
     return static_cast<jlong>(tox_options_get_savedata_length(as_options(options)));
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetSavedataLength(JNIEnv *, jobject, jlong options,
-                                                        jlong length) {
+T4K(void, optionsSetSavedataLength)(JNIEnv *, jobject, jlong options, jlong length) {
     assert(length >= 0);
     tox_options_set_savedata_length(as_options(options), static_cast<uint32_t>(length));
 }
 
 // LogCallback
-JNIEXPORT jobject JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsGetLogCallback(JNIEnv *, jobject, jlong options) {
+T4K(jobject, optionsGetLogCallback)(JNIEnv *, jobject, jlong options) {
     return as_container(options)->log_callback;
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsSetLogCallback(JNIEnv *env, jobject, jlong options,
-                                                     jobject callback) {
+T4K(void, optionsSetLogCallback)(JNIEnv *env, jobject, jlong options, jobject callback) {
     if (as_container(options)->log_callback != nullptr) env->DeleteGlobalRef(callback);
     as_container(options)->log_callback = env->NewGlobalRef(callback);
 }
 
 // Default
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsDefault(JNIEnv *, jobject, jlong options) {
+T4K(void, optionsDefault)(JNIEnv *, jobject, jlong options) {
     tox_options_default(as_options(options));
 }
 
 // Lifecycle
-JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsNew(JNIEnv *env, jobject) {
+T4K(jlong, optionsNew)(JNIEnv *env, jobject) {
     auto *c = new options_container;
     env->GetJavaVM(&c->jvm);
     tox_options_set_log_callback(c->options, tox_log_callback);
     return as_jlong(c);
 }
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_optionsFree(JNIEnv *, jobject, jlong options) {
+T4K(void, optionsFree)(JNIEnv *, jobject, jlong options) {
     delete as_container(options);
 }
 

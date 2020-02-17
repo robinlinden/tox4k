@@ -6,6 +6,9 @@
 #include <cstdint>
 #include <cstdlib>
 
+#define T4K(rettype, name) extern "C" rettype JNIEXPORT JNICALL \
+    Java_ltd_evilcorp_tox4k_ToxJni_##name
+
 namespace tox4k {
     struct options_container {
         options_container() = default;

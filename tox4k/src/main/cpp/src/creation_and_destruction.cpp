@@ -7,8 +7,7 @@
 
 extern "C" {
 
-JNIEXPORT jlong JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_toxNew(JNIEnv *const env, jobject, jlong c_handle) {
+T4K(jlong, toxNew)(JNIEnv *const env, jobject, jlong c_handle) {
     auto *const c = tox4k::as_container(c_handle);
 
     TOX_ERR_NEW err{TOX_ERR_NEW_OK};
@@ -46,8 +45,7 @@ Java_ltd_evilcorp_tox4k_ToxJni_toxNew(JNIEnv *const env, jobject, jlong c_handle
     }
 }
 
-JNIEXPORT void JNICALL
-Java_ltd_evilcorp_tox4k_ToxJni_toxKill(JNIEnv *, jobject, jlong tox) {
+T4K(void, toxKill)(JNIEnv *, jobject, jlong tox) {
     tox_kill(tox4k::as_tox(tox));
 }
 
