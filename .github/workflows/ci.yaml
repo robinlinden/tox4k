@@ -1,0 +1,16 @@
+on: [push, pull_request]
+jobs:
+  android-test:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install
+      run: |
+        echo "::add-path::/home/runner/.local/bin"
+        python3 -m pip install pip --upgrade
+        python3 -m pip install ninja==1.10.0 --upgrade
+    - name: Android Test
+      uses: reactivecircus/android-emulator-runner@v2
+      with:
+        api-level: 29
+        script: ./gradlew connectedCheck 
