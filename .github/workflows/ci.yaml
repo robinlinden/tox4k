@@ -1,6 +1,7 @@
-on: [push, pull_request]
+on: [pull_request]
 jobs:
   android-test:
+    name: android-test
     runs-on: macos-latest
     steps:
     - uses: actions/checkout@v2
@@ -13,4 +14,32 @@ jobs:
       uses: reactivecircus/android-emulator-runner@v2
       with:
         api-level: 29
-        script: ./gradlew connectedCheck 
+        script: ./gradlew connectedCheck
+
+  test:
+    name: ${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+          - os: windows-latest
+          - os: macos-latest
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Install
+        run: |
+          echo "::add-path::/home/runner/.local/bin"
+          python -m pip install pip --upgrade
+          python -m pip install ninja==1.10.0 --upgrade
+          python -m pip install cmake==3.14.4 --upgrade
+      - name: Install NDK
+        run: echo "y" | sudo "$ANDROID_HOME"/tools/bin/sdkmanager --install "ndk;21.0.6113669" --sdk_root=${ANDROID_SDK_ROOT}
+        if: startsWith(matrix.os, 'ubuntu') || startsWith(matrix.os, 'macos')
+      - name: Build
+        run: ./gradlew assembleDebug
+      - name: Test
+        run: ./gradlew testDebugUnitTest
